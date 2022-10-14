@@ -13,7 +13,7 @@ const NotFound: NextPage = () => {
           Please visit the homepage to explore more
         </div>
         <Link href="/">
-          <a className="p-2 px-4 py-3 mt-5 bg-red-600 hover:bg-red-700 duration-150 cursor-pointer text-white my-3">
+          <a className="p-2 px-4 py-3 mt-5 bg-blue-600 hover:bg-blue-700 duration-150 cursor-pointer text-white my-3">
             Home
           </a>
         </Link>
