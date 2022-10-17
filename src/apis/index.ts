@@ -1,3 +1,4 @@
 const userAPIs = require('./user');
+const postAPI = require('./posts');
 
-export { userAPIs };
+export { userAPIs, postAPI };

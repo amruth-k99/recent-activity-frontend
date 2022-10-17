@@ -5,7 +5,8 @@ import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link';
 import Container from '../components/Container';
-import RecentActivity from '../components/RecentActvity';
+import RecentActivity from '../components/RecentActivity';
+import postAPI from '../apis/posts';
 
 /**
  *
@@ -23,9 +24,12 @@ const Home: NextPage = () => {
   const fetchBlogs = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/blogs');
-      const data = await res.json();
-      setBlogs(data);
+      const blogs = await postAPI.getPosts({
+        page: 1,
+      });
+      console.log(blogs);
+
+      setBlogs(blogs.posts);
     } catch (err) {}
     setLoading(false);
   };
@@ -53,13 +57,6 @@ const Home: NextPage = () => {
         {blogs.map((blog: any, k) => (
           <Link key={k} href={`post/${blog.slug}`}>
             <div className="shadow-md rounded-lg cursor-pointer hover:shadow-xl transition">
-              <Image
-                src={blog.image}
-                alt="Landscape picture"
-                width={100}
-                height={100}
-                layout="responsive"
-              />
               <div className="p-2 mt-2">
                 <div className="text-lg font-semibold">{blog.title}</div>
                 <div className="text-sm font-semibold">{blog.author}</div>

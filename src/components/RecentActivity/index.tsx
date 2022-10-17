@@ -20,7 +20,7 @@ const RecentActivity = (): JSX.Element => {
   };
 
   const _renderActivity = () => {
-    /* Render Top 5 most visited posts */
+    /* Render activities */
 
     return (
       <div>

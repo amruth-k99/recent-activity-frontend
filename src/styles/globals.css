@@ -29,3 +29,6 @@ a {
     background: white;
   }
 }
+textarea {
+  resize: none;
+}
