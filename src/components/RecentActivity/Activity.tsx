@@ -4,14 +4,10 @@ import { VscReply } from 'react-icons/vsc';
 import { TiPencil } from 'react-icons/ti';
 
 const Activity = ({ activity }: any): JSX.Element => {
-  const ICONS = {
+  const ICONS: any = {
     comment_created: <FaRegComment className="my-auto" size={16} />,
     reply_created: <VscReply className="my-auto" size={16} />,
     post_created: <TiPencil className="my-auto" size={16} />,
-  };
-
-  const onClick = () => {
-    console.log('clicked');
   };
 
   return (
