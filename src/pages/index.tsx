@@ -27,6 +27,7 @@ const Home: NextPage = () => {
       const blogs = await postAPI.getPosts({
         page: 1,
       });
+
       console.log(blogs);
 
       setBlogs(blogs.posts);
@@ -34,21 +35,8 @@ const Home: NextPage = () => {
     setLoading(false);
   };
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        'https://xiuyf3nzxl.execute-api.ap-south-1.amazonaws.com/Prod/hello/'
-      );
-      const data = await res.json();
-      console.log(data);
-    } catch (err) {}
-    setLoading(false);
-  };
-
   useEffect(() => {
     fetchBlogs();
-    fetchData();
   }, []);
 
   const _renderTopFivePosts = () => {

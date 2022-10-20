@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Container from '../../components/Container';
 import postAPI from '../../apis/posts';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 
 /**
  *
@@ -17,6 +18,7 @@ import { toast } from 'react-toastify';
  */
 
 const Home: NextPage = () => {
+  const router = useRouter();
   const [blog, setBlog] = useState({
     title: '',
     content: '',
@@ -24,6 +26,7 @@ const Home: NextPage = () => {
     slug: '',
     tags: '',
   });
+
   const [loading, setLoading] = useState(false);
   const contentRef = useRef(null);
 
@@ -33,14 +36,16 @@ const Home: NextPage = () => {
       const body = {
         ...blog,
         tags: blog.tags.split(','),
-        slug:
+        slug: encodeURI(
           blog.title.replace(/\s/g, '-').toLowerCase() +
-          Math.floor(Math.random() * 1000),
+            Math.floor(Math.random() * 1000)
+        ),
       };
       console.log(body);
       const res = await postAPI.createPost(body);
       console.log(res);
       toast.success('Post created successfully');
+      router.push(`/post/${body.slug}`);
     } catch (err) {
       console.log(err);
       toast.error('Something went wrong. Please try again later.');

@@ -1,3 +1,5 @@
+import { BASE_URL } from '.';
+
 interface CommentBody {
   slug: string | string[] | undefined;
   comment: string;
@@ -8,16 +10,13 @@ interface CommentBody {
 const postAPI = {
   createPost: async (body: any) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/post/create`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        }
-      );
+      const res = await fetch(`${BASE_URL}/api/post/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
       const data = await res.json();
       return data;
     } catch (error) {
@@ -25,23 +24,21 @@ const postAPI = {
     }
   },
 
-  getAllPosts: async ({ page = 1, type = 'regular' }) => {
+  getAllPosts: async ({ page = 1 }) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/all?type=initial&page=${page}`
-      );
+      const res = await fetch(`${BASE_URL}/api/posts?page=${page}`);
       const data = await res.json();
       return data;
     } catch (error) {
-      throw new Error(`` + error);
+      console.log(error);
+      return { posts: [] };
     }
   },
 
-  getPosts: async ({ page = 1, type = 'regular' }) => {
+  getPosts: async ({ page = 1 }) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/all?type=initial&page=${page}`
-      );
+      console.log(`${BASE_URL}/api/posts?page=${page}`);
+      const res = await fetch(`${BASE_URL}/api/posts?page=${page}`);
       const data = await res.json();
       return data;
     } catch (error) {
@@ -51,9 +48,9 @@ const postAPI = {
 
   getPostBySlug: async (slug: string) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/post/${slug}`
-      );
+      console.log(slug);
+
+      const res = await fetch(`${BASE_URL}/api/post/${slug}`);
       if (res.status === 404) {
         return null;
       } else {
@@ -61,26 +58,40 @@ const postAPI = {
         return data;
       }
     } catch (error) {
-      throw new Error(`` + error);
+      console.log(error);
+      return {};
     }
   },
 
   addCommentToPost: async (body: CommentBody) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/comment`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        }
-      );
+      const res = await fetch(`${BASE_URL}/api/posts/comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
       const data = await res.json();
       return data;
     } catch (error) {
       throw new Error(`` + error);
+    }
+  },
+
+  getCommentsBySlug: async (slug: string, page: number) => {
+    try {
+      const res = await fetch(
+        `${BASE_URL}/api/comments?post_slug=${slug}&page=${page}`
+      );
+      if (res.status === 404) {
+        return [];
+      } else {
+        const data = await res.json();
+        return data;
+      }
+    } catch (error) {
+      return [];
     }
   },
 };

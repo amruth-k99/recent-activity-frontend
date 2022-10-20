@@ -4,7 +4,7 @@ import type {
   InferGetStaticPropsType,
   NextPage,
 } from 'next';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Head from 'next/head';
 import moment from 'moment';
 import Link from 'next/link';
@@ -32,32 +32,56 @@ type CommentBody = {
 
 export default function PostPage({
   post,
-  posts,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: // posts,
+InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter();
 
-  return router.isFallback ? (
-    <div>Loading...</div>
-  ) : (
-    <PostView blog={post} posts={posts} />
-  );
+  return router.isFallback ? <div>Loading...</div> : <PostView blog={post} />;
 }
 
-const PostView = ({ blog, posts }: any) => {
+const PostView = ({ blog }: any) => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [allComments, setComments] = useState([]);
+  const [commentsPage, setCommentsPage] = useState(1);
 
-  const fetchBlog = async () => {
+  const fetchComments = async () => {
     // setLoading(true);
     try {
-      const response = await postAPI.getPostBySlug(blog.slug);
+      console.log(blog);
+
+      const response: any = await postAPI.getCommentsBySlug(
+        blog.slug,
+        commentsPage
+      );
       console.log(response);
 
-      if (response.comments) {
-        setComments(response.comments);
+      if (response) {
+        if (response.length === 0) {
+          return;
+        }
+
+        let updatedComments: any = [...allComments, ...response];
+        setComments(updatedComments);
+        setTimeout(() => {
+          if (router.asPath.includes('#comment-')) {
+            let commentId = router.asPath.split('#comment-')[1];
+            console.log('commentId', commentId);
+            if (commentId) {
+              let comment = document.getElementById(commentId);
+              if (comment) {
+                comment.scrollIntoView({
+                  behavior: 'smooth',
+                });
+              } else {
+                console.log('comment not found');
+                setCommentsPage(commentsPage + 1);
+              }
+            }
+          }
+        }, 500);
       }
     } catch (err) {
       console.log(err);
@@ -66,12 +90,10 @@ const PostView = ({ blog, posts }: any) => {
   };
 
   useEffect(() => {
-    console.log(posts, blog);
-
     if (blog) {
-      fetchBlog();
+      fetchComments();
     }
-  }, []);
+  }, [commentsPage]);
 
   const handleNewComment = (e: any) => {
     setNewComment(e.target.value);
@@ -111,65 +133,84 @@ const PostView = ({ blog, posts }: any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="mx-auto sm:px-4 md:px-10 px-10">
-        {loading && <div>Loading...</div>}
-
-        {!loading && (
-          <main className={'my-3'}>
-            <Container heading="">
-              <div>
-                <div
-                  placeholder="Article Title..."
-                  className="bg-white text-4xl my-5 w-full placeholder-gray-500 font-extrabold border-none focus:backdrop-filter-none focus:outline-none"
-                >
-                  {blog?.title}{' '}
-                </div>
-
-                <div className="bg-white w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
-                  {blog?.content}
-                </div>
-
-                <div className="bg-white flex justify-start text-md my-10 w-full placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
-                  {blog?.tags?.map((tag: string, i: number) => (
-                    <span
-                      key={i}
-                      className="border m-auto bg-gray-200 rounded-md px-2 py-1 mx-2"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+        <main className={'my-3'}>
+          <Container heading="">
+            <div>
+              <div
+                placeholder="Article Title..."
+                className="bg-white text-4xl my-5 w-full placeholder-gray-500 font-extrabold border-none focus:backdrop-filter-none focus:outline-none"
+              >
+                {blog?.title}{' '}
               </div>
 
-              {/* Comment Section */}
-              <div className="my-10 text-3xl font-bold">Comments</div>
               <div className="bg-white w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
-                <textarea
-                  placeholder="Enter your comment here..."
-                  required
-                  value={newComment}
-                  className="bg-white p-3 text-md rounded-md w-full border-2 border-gray-200 focus:border-blue-600 focus:outline-none"
-                  onChange={handleNewComment}
-                ></textarea>
-                <div className="w-full m-auto text-right">
-                  <button
-                    // disabled={newComment.length === 0}
-                    className="bg-blue-600 rounded-full my-4 text-white py-2 px-6"
-                    onClick={addComment}
-                  >
-                    <span className="flex text-base items-center my-auto">
-                      <FiSend className="mr-2" /> Submit
-                    </span>
-                  </button>
-                </div>
+                {blog?.content}
               </div>
-              <div>
-                {allComments?.map((comment: any, k) => (
-                  <Comment comment={comment} key={k} />
+
+              <div className="bg-white flex justify-start text-md my-10 w-full placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
+                {blog?.tags?.map((tag: string, i: number) => (
+                  <span
+                    key={i}
+                    className="border m-auto bg-gray-200 rounded-md px-2 py-1 mx-2"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
-            </Container>
-          </main>
-        )}
+            </div>
+
+            {/* Comment Section */}
+            {!loading ? (
+              <Fragment>
+                <div className="my-10 text-3xl font-bold">Comments</div>
+                <div className="bg-white w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
+                  <textarea
+                    placeholder="Enter your comment here..."
+                    required
+                    value={newComment}
+                    className="bg-white p-3 text-md rounded-md w-full border-2 border-gray-200 focus:border-blue-600 focus:outline-none"
+                    onChange={handleNewComment}
+                  ></textarea>
+                  <div className="w-full m-auto text-right">
+                    <button
+                      // disabled={newComment.length === 0}
+                      className="bg-blue-600 rounded-full my-4 text-white py-2 px-6"
+                      onClick={addComment}
+                    >
+                      <span className="flex text-base items-center my-auto">
+                        <FiSend className="mr-2" /> Submit
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  {allComments?.map((comment: any, k) => (
+                    <Comment
+                      comment={comment}
+                      key={k}
+                      onAddNewReply={(newReply: any) => {
+                        setComments((prevComments: any) =>
+                          prevComments.map((prevComment: any) => {
+                            if (prevComment._id === comment._id) {
+                              return {
+                                ...prevComment,
+                                replies: [...prevComment.replies, newReply],
+                              };
+                            } else {
+                              return prevComment;
+                            }
+                          })
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
+              </Fragment>
+            ) : (
+              <div>Loading comments...</div>
+            )}
+          </Container>
+        </main>
       </div>
     </div>
   );
@@ -249,6 +290,7 @@ const Comment = ({ comment, onAddNewReply }: any) => {
       {comment.replies.map((reply: any, j: number) => (
         <div
           key={'comment_' + j}
+          id={reply._id}
           className="bg-gray-50 w-full border rounded-lg p-3 overflow-auto text-lg my-5 placeholder-gray-500"
         >
           <div className="flex justify-between">
@@ -320,38 +362,34 @@ const Comment = ({ comment, onAddNewReply }: any) => {
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext<{ slug: string }>) {
-  const { posts } = await postAPI.getAllPosts({
-    page: 1,
-    type: 'initial',
-  });
+  console.log('params', params);
 
-  const post = await postAPI.getPostBySlug(params!.slug);
+  if (params) {
+    console.log('@@@', params.slug);
 
-  // const allProductsPromise = commerce.getAllProducts({
-  //   variables: { first: 4 },
-  //   config,
-  //   preview,
-  // });
+    const post = await postAPI.getPostBySlug(params.slug || 'qwert');
 
-  // const { products: relatedProducts } = await allProductsPromise;
-
-  if (!post) {
-    throw new Error(`Post with slug '${params!.slug}' not found`);
+    if (!post) {
+      throw new Error(`Post with slug '${params.slug}' not found`);
+    }
+    return {
+      props: {
+        post,
+      },
+      revalidate: 200,
+    };
+  } else {
+    return {
+      props: {
+        post: {},
+      },
+      revalidate: 200,
+    };
   }
-
-  return {
-    props: {
-      posts,
-      post,
-      // relatedProducts,
-    },
-    revalidate: 200,
-  };
 }
 
 export async function getStaticPaths({ locales }: GetStaticPathsContext) {
   const { posts } = await postAPI.getAllPosts({
-    type: 'initial',
     page: 1,
   });
 
