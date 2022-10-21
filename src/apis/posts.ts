@@ -67,7 +67,7 @@ const postAPI = {
 
   addCommentToPost: async (body: CommentBody) => {
     try {
-      const res = await fetch(`${BASE_URL}/api/posts/comment`, {
+      const res = await fetch(`${BASE_URL}/api/comment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
