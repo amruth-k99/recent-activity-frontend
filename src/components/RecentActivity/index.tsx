@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { FaRegComment } from 'react-icons/fa';
-import { VscReply } from 'react-icons/vsc';
-import { TiPencil } from 'react-icons/ti';
+import React, { Fragment, useEffect, useState } from 'react';
+import { BiChevronDownCircle } from 'react-icons/bi';
 import Container from '../Container';
 import Activity from './Activity';
 import userAPIs from '../../apis/user';
@@ -37,7 +35,7 @@ const RecentActivity = (): JSX.Element => {
     return (
       <div>
         {activities.map((activity: any, k) => (
-          <div key={k}>
+          <Fragment key={k}>
             <div className="flex flex-row my-4">
               {/* Left branch */}
               <div className="w-24 flex flex-col text-center" id="left">
@@ -54,8 +52,29 @@ const RecentActivity = (): JSX.Element => {
                 ))}
               </div>
             </div>
-          </div>
+          </Fragment>
         ))}
+        <div className="flex flex-row my-4">
+          {/* Left branch */}
+          <div className="w-24 flex flex-col text-center" id="left">
+            <div className="flex-1 flex w-0.5 h-full border-l-2 border-dashed my-2 self-center border-blue-400"></div>
+          </div>
+
+          {/* Right branch */}
+          <div className="flex-1" id="right">
+            <div
+              onClick={() => {
+                console.log('Load more');
+              }}
+              className="text-center py-1 cursor-pointer hover:bg-gray-200"
+            >
+              <div className="flex gap-2 text-blue-500 font-semibold text-sm rounded-md p-2 my-auto align-middle">
+                <BiChevronDownCircle className="text-lg align-middle my-auto" />
+                Show More
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };

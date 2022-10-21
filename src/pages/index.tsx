@@ -1,7 +1,6 @@
 import type { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link';
 import Container from '../components/Container';
