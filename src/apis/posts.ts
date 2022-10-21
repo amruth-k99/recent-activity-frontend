@@ -10,7 +10,7 @@ interface CommentBody {
 const postAPI = {
   createPost: async (body: any) => {
     try {
-      const res = await fetch(`${BASE_URL}/api/post/create`, {
+      const res = await fetch(`${BASE_URL}/api/posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -20,7 +20,9 @@ const postAPI = {
       const data = await res.json();
       return data;
     } catch (error) {
-      return [];
+      return {
+        error: 'Something went wrong',
+      };
     }
   },
 

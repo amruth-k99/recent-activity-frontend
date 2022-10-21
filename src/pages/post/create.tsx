@@ -43,14 +43,19 @@ const Home: NextPage = () => {
       };
       console.log(body);
       const res = await postAPI.createPost(body);
-      console.log(res);
-      toast.success('Post created successfully');
-      router.push(`/post/${body.slug}`);
+      if (res.error) {
+        toast.error(res.error);
+      } else {
+        console.log(res);
+        toast.success('Post created successfully');
+        // router.push(`/post/${body.slug}`);
+      }
     } catch (err) {
       console.log(err);
       toast.error('Something went wrong. Please try again later.');
     }
     setLoading(false);
+    // aws apigatewayv2 update-api --api-id thkfqf29j5 --cors-configuration AllowOrigins="https://recent-activity-frontend.vercel.app"
   };
 
   const handleInputChange = (e: any) => {
