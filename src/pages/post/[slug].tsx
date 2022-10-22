@@ -46,16 +46,15 @@ const PostView = ({ blog }: any) => {
   const fetchComments = async () => {
     setLoading(true);
     try {
-      console.log(blog);
-
       const response: any = await postAPI.getCommentsBySlug(
         blog.slug,
         commentsPage
       );
-      console.log(response);
 
       if (response) {
         if (response.length === 0) {
+          console.log('Comments', response);
+          setLoading(false);
           return;
         }
 

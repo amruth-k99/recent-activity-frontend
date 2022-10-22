@@ -6,22 +6,28 @@
     "dev": "next dev -p 8080",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
+    "lodash.throttle": "^4.1.1",
     "moment": "^2.29.4",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-loading-skeleton": "^3.1.0",
     "react-toastify": "^9.0.8"
   },
   "devDependencies": {
+    "@types/lodash.throttle": "^4.1.7",
     "@types/node": "18.8.4",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "autoprefixer": "^10.4.12",
+    "cypress": "^10.10.0",
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
     "postcss": "^8.4.17",
