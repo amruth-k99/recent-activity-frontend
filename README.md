@@ -1,34 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# POC for Recent Activites Assignment
 
-## Getting Started
+### by Amruth Kuntamalla
 
-First, run the development server:
+This repo consists of the frontend part of the solution hosted on Vercel.
 
-```bash
+> NOTE: For the backend repoitory: https://github.com/amruth-k99/amruth-blogs-backend
+
+## Features
+
+- The project uses SSR and Incremental Static Rendering(ISR) to generate new blogs.
+- Configured for SEO with Open Graph(OG) tags and title tags for all the Static sites generated
+- A user can create a post and commnent to any post
+- A user can check his activities in the homepage grouped by date
+
+## Tech Stack
+
+- [Next JS] - A React Framework
+- TypeScript - Strongly-typed JavaScript
+- [Tailwind] - CSS framework
+- [node.js] - evented I/O for the backend
+- [MongoDB] - Persistent Database
+- [AWS Serverless Application Model(SAM)] - To deploy functions to AWS Lambda
+- [Vercel] - Hosting the frontend
+- [Cypress] - Hosting the frontend
+
+And of course Dillinger itself is open source with a [public repository][dill]
+on GitHub.
+
+## Installation
+
+This repo requires NPM installed on the machine.
+
+Install the dependencies and devDependencies and start the dev server.
+
+```sh
+cd recent-activity-frontend
+npm i
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Please create an environment file for the local development (.env.local) with following contents:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+NEXT_PUBLIC_ENV_URL=http://localhost:3000
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```
 
-## Learn More
+For production environments...
 
-To learn more about Next.js, take a look at the following resources:
+```sh
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+npm run build
+NODE_ENV=production npm start
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
 
-## Deploy on Vercel
+## Dependencies used
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- react-icons
+- react-toastify
+- react-loading-skeleton
+- moment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[//]: # "These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax"
+[tailwind]: https://tailwindcss.com
+[aws serverless application model(sam)]: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html
+[next js]: https://nextjs.org
+[node.js]: http://nodejs.org
+[mongodb]: https://www.mongodb.com/
+[vercel]: https://www.vercel.com/
+
+## Testing
+
+Cypress is being used to testing
