@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import { FiSend } from 'react-icons/fi';
 import { BsReply } from 'react-icons/bs';
 import { toast } from 'react-toastify';
+import Skeleton from 'react-loading-skeleton';
 /**
  *
  * TODO:
@@ -37,13 +38,13 @@ export default function PostPage({
 const PostView = ({ blog }: any) => {
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState('');
   const [allComments, setComments] = useState([]);
   const [commentsPage, setCommentsPage] = useState(1);
 
   const fetchComments = async () => {
-    // setLoading(true);
+    setLoading(true);
     try {
       console.log(blog);
 
@@ -59,24 +60,23 @@ const PostView = ({ blog }: any) => {
         }
 
         let updatedComments: any = [...allComments, ...response];
-        setComments(updatedComments);
-        setTimeout(() => {
-          if (router.asPath.includes('#comment-')) {
-            let commentId = router.asPath.split('#comment-')[1];
-            console.log('commentId', commentId);
-            if (commentId) {
-              let comment = document.getElementById(commentId);
-              if (comment) {
-                comment.scrollIntoView({
-                  behavior: 'smooth',
-                });
-              } else {
-                console.log('comment not found');
-                setCommentsPage(commentsPage + 1);
-              }
+        setComments(() => updatedComments);
+
+        if (router.asPath.includes('#comment-')) {
+          let commentId = router.asPath.split('#comment-')[1];
+
+          if (commentId) {
+            let comment = document.getElementById(commentId);
+            if (comment) {
+              comment.scrollIntoView({
+                behavior: 'smooth',
+              });
+            } else {
+              console.log('comment not found');
+              setCommentsPage(commentsPage + 1);
             }
           }
-        }, 500);
+        }
       }
     } catch (err) {
       console.log(err);
@@ -128,18 +128,18 @@ const PostView = ({ blog }: any) => {
         description={'Click here to read the blog'}
       />
 
-      <div className="mx-auto sm:px-4 md:px-10 px-10">
+      <div className="mx-auto sm:px-4 px-6 md:px-10">
         <main className={'my-3'}>
-          <Container heading="">
+          <div className="container mx-auto">
             <div>
               <div
                 placeholder="Article Title..."
                 className="bg-white text-4xl my-5 w-full placeholder-gray-500 font-extrabold border-none focus:backdrop-filter-none focus:outline-none"
               >
-                {blog?.title}{' '}
+                {blog?.title}
               </div>
 
-              <div className="bg-white w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
+              <div className="bg-white text-justify lg:text-start w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
                 {blog?.content}
               </div>
 
@@ -156,9 +156,9 @@ const PostView = ({ blog }: any) => {
             </div>
 
             {/* Comment Section */}
+            <div className="my-10 text-3xl font-bold">Comments</div>
             {!loading ? (
               <Fragment>
-                <div className="my-10 text-3xl font-bold">Comments</div>
                 <div className="bg-white w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
                   <textarea
                     placeholder="Enter your comment here..."
@@ -203,9 +203,18 @@ const PostView = ({ blog }: any) => {
                 </div>
               </Fragment>
             ) : (
-              <div>Loading comments...</div>
+              <div>
+                <div className="flex justify-start w-16">
+                  <Skeleton circle width={60} height={60} />
+                  <Skeleton />
+                </div>
+                <div>
+                  <Skeleton />
+                  <Skeleton />
+                </div>
+              </div>
             )}
-          </Container>
+          </div>
         </main>
       </div>
     </div>

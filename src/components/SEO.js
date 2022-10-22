@@ -1,7 +1,12 @@
 import React from 'react';
 import Head from 'next/head';
 
-const SEO = ({ description, keywords, title, slug = 'https://recent-activity-frontend.vercel.app/' }) => (
+const SEO = ({
+  description,
+  keywords,
+  title,
+  slug = 'https://recent-activity-frontend.vercel.app/',
+}) => (
   <Head>
     <title>{title} </title>
     <meta name="description" content={description} />
@@ -32,8 +37,8 @@ const SEO = ({ description, keywords, title, slug = 'https://recent-activity-fro
 );
 
 SEO.defaultProps = {
-  description: 'Amruth&apos;s Blog',
-  title: 'Amruth&apos;s Blog',
+  description: `Amruth's Blog`,
+  title: `Amruth's Blog`,
   keywords: ['blogs', "amruth's blog", 'tech'],
 };
 

@@ -109,7 +109,7 @@ const Home: NextPage = () => {
                   onClick={createPost}
                   className="mr-auto"
                 >
-                  <div className="text-md flex gap-2 text-white rounded-3xl bg-blue-600 px-5 py-2 cursor-pointer">
+                  <div className="text-md whitespace-nowrap flex gap-2 text-white rounded-3xl bg-blue-600 px-5 py-2 cursor-pointer">
                     Create new post
                   </div>
                 </button>
