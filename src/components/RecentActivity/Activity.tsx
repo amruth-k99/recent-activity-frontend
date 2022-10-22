@@ -43,7 +43,7 @@ const Activity = ({ activity, loading }: Props): JSX.Element => {
         </div>
 
         <a
-          href={`${activity.meta.url}`}
+          href={`${activity?.meta?.url}`}
           target="_blank"
           rel="noreferrer"
           className="text-md font-bold"

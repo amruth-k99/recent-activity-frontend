@@ -14,39 +14,36 @@ type Activity = {
 
 const RecentActivity = (): JSX.Element => {
   const bottomRef = useRef<HTMLDivElement>(null);
+  const currentPageRef = useRef(1);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [lastPage, setLastPage] = useState(false);
+  const [lastPage, setLastPage] = useState(10);
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
-    console.log('currentPage', currentPage);
-    _fetchRecentActivity(currentPage);
-  }, [currentPage]);
+    _fetchRecentActivity(1);
+  }, []);
 
   const _fetchRecentActivity = async (page: number) => {
     try {
-      console.log('fetching recent activity', page);
-
-      if (lastPage) {
+      if (page > lastPage) {
         console.log("We've reached the last page");
-        setLastPage(true);
         setLoading(false);
         return;
       }
 
+      console.log('fetching recent activity', page, lastPage);
       setLoading(true);
       let res = await userAPIs.getRecentActivities(page).catch((err) => {
         console.log(err);
         return [];
       });
-      console.log('Got', res?.recent_activities);
 
       if (res?.recent_activities) {
         setLoading(false);
-
+        setLastPage(res.last_page);
+        currentPageRef.current = page;
+        console.log(res);
         if (res.recent_activities.length === 0) {
-          setLastPage(true);
           window.removeEventListener('scroll', () => {
             'handle scroll removed';
           });
@@ -54,8 +51,7 @@ const RecentActivity = (): JSX.Element => {
         }
 
         // if the dates match with the last date in the activities array, then we don't need to add the date
-        if (currentPage > 1) {
-          console.log('current page is greater than 1', activities);
+        if (currentPageRef.current > 1) {
           let prevActivities: Array<Activity> = activities;
 
           const lastDateActivity = prevActivities[activities.length - 1]._id;
@@ -77,6 +73,8 @@ const RecentActivity = (): JSX.Element => {
         }
 
         setActivities((): any => [...activities, ...res.recent_activities]);
+      } else {
+        console.log('--------');
       }
     } catch (err) {
       toast.error('Something went wrong');
@@ -84,54 +82,52 @@ const RecentActivity = (): JSX.Element => {
   };
 
   const debounceOnScroll = throttle(() => {
-    console.log('last page', lastPage, 'currentPage', currentPage);
+    let nextPage = currentPageRef.current + 1;
+    setLoading(true);
+    _fetchRecentActivity(nextPage);
 
-    if (lastPage) {
-      console.log('Last page');
-    } else {
-      setCurrentPage((prev) => prev + 1);
+    if (nextPage === lastPage) {
+      window.removeEventListener('scroll', scrollListener);
     }
-  }, 1500);
+  }, 200);
 
   const incrementPage = () => {
-    setCurrentPage((prev) => prev + 1);
-    bottomRef.current.addEventListener('scroll', (e) => {
-      console.log(
-        'scrolling',
-        lastPage,
-        bottomRef.current?.scrollHeight,
-        window.scrollY
-      );
+    if (currentPageRef.current === 1) {
+      _fetchRecentActivity(2);
 
-      if (
-        bottomRef.current?.scrollHeight + 100 < window.scrollY &&
-        !loading &&
-        !lastPage
-      ) {
-        debounceOnScroll();
-      } else {
-        console.log('reached last page');
-      }
-    });
+      window.addEventListener('scroll', scrollListener);
+    }
   };
 
   const scrollListener = () => {
-    console.log(
-      'scrolling',
-      lastPage,
-      bottomRef.current?.scrollHeight,
-      window.scrollY
-    );
-
-    if (
-      bottomRef.current?.scrollHeight + 100 < window.scrollY &&
-      !loading &&
-      !lastPage
-    ) {
-      debounceOnScroll();
-    } else {
-      console.log('reached last page');
+    if (currentPageRef.current !== lastPage) {
     }
+
+    if (bottomRef.current?.scrollHeight < window.scrollY + 100) {
+      console.log('bottom reached');
+      debounceOnScroll();
+    }
+  };
+
+  const _renderLoading = () => {
+    return (
+      <Fragment>
+        <div className="flex flex-row my-4">
+          {/* Left branch */}
+          <div className="w-24 flex flex-col text-center" id="left">
+            <div className="text-sm text-gray-500 my-1"></div>
+            <div className="flex-1 flex w-0.5 h-full border-l-2 border-dashed my-2 self-center border-blue-400"></div>
+          </div>
+
+          {/* Right branch */}
+          <div className="flex-1" id="right">
+            {[0, 0, 0, 0, 0, 0, 0].map((act: any, j: any) => (
+              <Activity key={j} activity={{}} loading={loading} />
+            ))}
+          </div>
+        </div>
+      </Fragment>
+    );
   };
 
   const _renderActivity = () => {
@@ -160,37 +156,16 @@ const RecentActivity = (): JSX.Element => {
             </div>
           </Fragment>
         ))}
-        {loading && (
-          <Fragment>
-            <div className="flex flex-row my-4">
-              {/* Left branch */}
-              <div className="w-24 flex flex-col text-center" id="left">
-                <div className="text-sm text-gray-500 my-1"></div>
-                <div className="flex-1 flex w-0.5 h-full border-l-2 border-dashed my-2 self-center border-blue-400"></div>
-              </div>
 
-              {/* Right branch */}
-              <div className="flex-1" id="right">
-                {[0, 0, 0, 0, 0, 0, 0].map((act: any, j: any) => (
-                  <Activity key={j} activity={{}} loading={loading} />
-                ))}
-              </div>
-            </div>
-          </Fragment>
-        )}
-        <div
-          className="flex flex-row my-4"
-          onScrollCapture={() => {
-            console.log('touch end');
-          }}
-        >
+        {loading && _renderLoading()}
+
+        <div className="flex flex-row my-4">
           {/* Left branch */}
           <div className="w-24 flex flex-col text-center" id="left">
             <div className="flex-1 flex w-0.5 h-full border-l-2 border-dashed my-2 self-center border-blue-400"></div>
           </div>
-
           {/* Right branch */}
-          {currentPage <= 1 && (
+          {currentPageRef.current == 1 && !loading && (
             <div className="flex-1" id="right">
               <div
                 onClick={incrementPage}
