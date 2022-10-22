@@ -30,7 +30,7 @@ const RecentActivity = (): JSX.Element => {
         if (res.recent_activities.length === 0) {
           setLastPage(true);
         } else {
-          setActivities(() => [...activities, ...res.recent_activities]);
+          setActivities((): any => [...activities, ...res.recent_activities]);
         }
       }
     } catch (err) {
