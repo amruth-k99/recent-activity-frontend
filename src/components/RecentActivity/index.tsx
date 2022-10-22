@@ -103,7 +103,11 @@ const RecentActivity = (): JSX.Element => {
     if (currentPageRef.current !== lastPage) {
     }
 
-    if (bottomRef.current?.scrollHeight < window.scrollY + 100) {
+    if (!bottomRef.current) {
+      return;
+    }
+
+    if (bottomRef.current.scrollHeight < window.scrollY + 100) {
       console.log('bottom reached');
       debounceOnScroll();
     }

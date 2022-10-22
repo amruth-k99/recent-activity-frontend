@@ -19,10 +19,9 @@ This repo consists of the frontend part of the solution hosted on Vercel.
 - TypeScript - Strongly-typed JavaScript
 - [Tailwind] - CSS framework
 - [node.js] - evented I/O for the backend
-- [MongoDB] - Persistent Database
+- [MongoDB] - Persistant Database
 - [AWS Serverless Application Model(SAM)] - To deploy functions to AWS Lambda
 - [Vercel] - Hosting the frontend
-- [Cypress] - Hosting the frontend
 
 And of course Dillinger itself is open source with a [public repository][dill]
 on GitHub.
@@ -42,18 +41,14 @@ npm run dev
 Please create an environment file for the local development (.env.local) with following contents:
 
 ```
-
 NEXT_PUBLIC_ENV_URL=http://localhost:3000
-
 ```
 
 For production environments...
 
 ```sh
-
 npm run build
 NODE_ENV=production npm start
-
 ```
 
 ## Dependencies used
