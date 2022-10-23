@@ -1,5 +1,5 @@
 import React from 'react';
-import SubHeading from '../Headings/subheading';
+import { SubHeading } from '../Headings';
 
 interface ContainerProps {
   children: JSX.Element | JSX.Element[];

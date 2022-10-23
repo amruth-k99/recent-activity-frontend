@@ -46,13 +46,13 @@ const Home: NextPage = () => {
         {blogs.map((blog: any, k) =>
           blog ? (
             <Link key={k} href={`post/${blog.slug}`}>
-              <div className="shadow-md rounded-lg cursor-pointer hover:shadow-xl transition">
+              <a className="shadow-md rounded-lg cursor-pointer hover:shadow-xl transition">
                 <div className="p-2 mt-2">
                   <div className="text-lg font-semibold">{blog.title}</div>
                   <div className="text-sm font-semibold">{blog.author}</div>
                   <div className="text-sm font-normal">{blog.summary}</div>
                 </div>
-              </div>
+              </a>
             </Link>
           ) : (
             <div>
