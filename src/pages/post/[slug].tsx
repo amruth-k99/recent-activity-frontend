@@ -62,19 +62,21 @@ const PostView = ({ blog }: any) => {
         setComments(() => updatedComments);
 
         if (router.asPath.includes('#comment-')) {
-          let commentId = router.asPath.split('#comment-')[1];
-
-          if (commentId) {
-            let comment = document.getElementById(commentId);
-            if (comment) {
-              comment.scrollIntoView({
-                behavior: 'smooth',
-              });
-            } else {
-              console.log('comment not found');
-              setCommentsPage(commentsPage + 1);
+          setTimeout(() => {
+            let commentId = router.asPath.split('#comment-')[1];
+            console.log('commentId', commentId);
+            if (commentId) {
+              let comment = document.getElementById(commentId);
+              if (comment) {
+                comment.scrollIntoView({
+                  behavior: 'smooth',
+                });
+              } else {
+                console.log('comment not found');
+                setCommentsPage(commentsPage + 1);
+              }
             }
-          }
+          }, 300);
         }
       }
     } catch (err) {
