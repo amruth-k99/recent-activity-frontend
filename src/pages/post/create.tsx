@@ -1,23 +1,10 @@
 import type { NextPage } from 'next';
-import { useEffect, useRef, useState } from 'react';
-import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useRef, useState } from 'react';
 import Container from '../../components/Container';
 import postAPI from '../../apis/posts';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import SEO from '../../components/SEO';
-import moment from 'moment';
-
-/**
- *
- * TODO:
- * 1. Make this static site using static props and Initial Activities should come from Page props
- * 2. Add a new page for creating a new post
- * 3. More should come from the API
- *
- */
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -115,6 +102,7 @@ const Home: NextPage = () => {
               <button
                 disabled={loading}
                 onClick={createPost}
+                id="create-post"
                 className="mr-auto"
               >
                 <div className="text-md whitespace-nowrap flex gap-2 text-white rounded-3xl bg-blue-600 px-5 py-2 cursor-pointer">

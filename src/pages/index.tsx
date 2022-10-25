@@ -9,15 +9,6 @@ import postAPI from '../apis/posts';
 import Skeleton from 'react-loading-skeleton';
 import SEO from '../components/SEO';
 
-/**
- *
- * TODO:
- * 1. Make this static site using static props and Initial Activities should come from Page props
- * 2. Add a new page for creating a new post
- * 3. More should come from the API
- *
- */
-
 const Home: NextPage = () => {
   const [blogs, setBlogs] = useState(new Array(4).fill(null));
   const [loading, setLoading] = useState(false);

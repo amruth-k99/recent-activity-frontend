@@ -4,7 +4,6 @@ import type {
   InferGetStaticPropsType,
 } from 'next';
 import { Fragment, useEffect, useState } from 'react';
-import Container from '../../components/Container';
 import SEO from '../../components/SEO';
 import postAPI from '../../apis/posts';
 import { commonDate } from '../../utils/dates';
@@ -13,19 +12,6 @@ import { FiSend } from 'react-icons/fi';
 import { BsReply } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
-/**
- *
- * TODO:
- * 1. Make this static site using static props
- * 2. Add a new page for creating a new post
- *
- */
-
-type CommentBody = {
-  name: string;
-  email: string;
-  body: string;
-};
 
 export default function PostPage({
   post,

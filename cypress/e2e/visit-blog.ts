@@ -9,13 +9,24 @@ describe('Navigation', () => {
     cy.visit('http://localhost:3000/');
 
     // Find a link with an href attribute containing "about" and click it
-    cy.get('a[href*="about"]').click();
+    cy.get('a[href*="post/create"]').click();
 
     // The new url should include "/about"
-    cy.url().should('include', '/about');
+    cy.url().should('include', '/create');
 
-    // The new page should contain an h1 with "About page"
-    cy.get('h1').contains('About Page');
+    // The new post page should contain an input with placeholder "Article Title"
+    cy.get('input[placeholder*="Article Title..."]').type('New Blog Testing');
+
+    // The new post page should contain an input with placeholder "Blog Starts Here..."
+    cy.get('textarea[name="content"]').type(
+      'Content of the blog'
+    );
+
+    cy.get('input[name="tags"]').type(
+      'new,blog,testing,react,redux,redux-saga'
+    );
+
+    cy.get('button[id="create-post"]').click();
   });
 });
 
