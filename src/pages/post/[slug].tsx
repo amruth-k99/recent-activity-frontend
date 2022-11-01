@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import type {
   GetStaticPathsContext,
   GetStaticPropsContext,
@@ -9,6 +10,7 @@ import postAPI from '../../apis/posts';
 import { commonDate } from '../../utils/dates';
 import { useRouter } from 'next/router';
 import { FiSend } from 'react-icons/fi';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { BsReply } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
@@ -37,33 +39,35 @@ const PostView = ({ blog }: any) => {
         commentsPage
       );
 
-      if (response) {
-        if (response.length === 0) {
-          console.log('Comments', response);
-          setLoading(false);
-          return;
-        }
+      if (!response) {
+        return;
+      }
 
-        let updatedComments: any = [...allComments, ...response];
-        setComments(() => updatedComments);
+      if (response.length === 0) {
+        console.log('Comments', response);
+        setLoading(false);
+        return;
+      }
 
-        if (router.asPath.includes('#comment-')) {
-          setTimeout(() => {
-            let commentId = router.asPath.split('#comment-')[1];
-            console.log('commentId', commentId);
-            if (commentId) {
-              let comment = document.getElementById(commentId);
-              if (comment) {
-                comment.scrollIntoView({
-                  behavior: 'smooth',
-                });
-              } else {
-                console.log('comment not found');
-                setCommentsPage(commentsPage + 1);
-              }
+      let updatedComments: any = [...allComments, ...response];
+      setComments(() => updatedComments);
+
+      if (router.asPath.includes('#comment-')) {
+        setTimeout(() => {
+          let commentId = router.asPath.split('#comment-')[1];
+          console.log('commentId', commentId);
+          if (commentId) {
+            let comment = document.getElementById(commentId);
+            if (comment) {
+              comment.scrollIntoView({
+                behavior: 'smooth',
+              });
+            } else {
+              console.log('comment not found');
+              setCommentsPage(commentsPage + 1);
             }
-          }, 300);
-        }
+          }
+        }, 300);
       }
     } catch (err) {
       console.log(err);
@@ -83,15 +87,21 @@ const PostView = ({ blog }: any) => {
 
   const postComment = async (isReply: boolean, commentID: string | null) => {
     try {
-      const response = await postAPI.addCommentToPost({
+      const body = {
         comment: newComment,
         slug: blog.slug,
         isReply,
         repliedToComment: commentID,
-      });
-      console.log(response);
-      // setComments([...allComments, { body: newComment }]);
-      return response;
+      };
+      const response = await postAPI.addCommentToPost(body);
+      return {
+        ...response,
+        ...body,
+        createdAt: new Date(),
+        // Change this to the logged in user
+        user: [{ name: 'Amruth' }],
+        replies: [],
+      };
     } catch (error) {
       console.log(error);
       toast.success('Something went wrong');
@@ -100,7 +110,15 @@ const PostView = ({ blog }: any) => {
   };
 
   const addComment = async () => {
+    if (newComment.trim().length === 0) {
+      toast.error('Comment cannot be empty');
+      return;
+    }
+
     let response: any = await postComment(false, null);
+
+    setComments((prev: any) => [response, ...prev]);
+
     if (response.insertedId) {
       toast.success('Comment posted successfully');
       setNewComment('');
@@ -117,7 +135,7 @@ const PostView = ({ blog }: any) => {
 
       <div className="mx-auto sm:px-4 px-6 md:px-10">
         <main className={'my-3'}>
-          <div className="container mx-auto">
+          <div className="container max-w-5xl mx-auto">
             <div>
               <div
                 placeholder="Article Title..."
@@ -202,6 +220,22 @@ const PostView = ({ blog }: any) => {
               </div>
             )}
           </div>
+          <div className="hidden lg:block">
+            <div className="flex justify-center">
+              <div className="flex justify-center">
+                <button
+                  className="bg-blue-600 rounded-full my-4 text-white py-2 px-6"
+                  onClick={() => {
+                    setCommentsPage(commentsPage + 1);
+                  }}
+                >
+                  <span className="flex text-base items-center my-auto">
+                    <FiSend className="mr-2" /> Load More
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
         </main>
       </div>
     </div>
@@ -226,6 +260,11 @@ const Comment = ({ comment, onAddNewReply }: any) => {
 
   const addReply = async (commentID: string) => {
     console.log(commentID);
+
+    if (reply.length === 0) {
+      toast.info('Please enter a reply');
+      return;
+    }
 
     const response = await postAPI.addCommentToPost({
       comment: reply,
