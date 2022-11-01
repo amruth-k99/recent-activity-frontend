@@ -117,7 +117,9 @@ const PostView = ({ blog }: any) => {
 
     let response: any = await postComment(false, null);
 
-    setComments((prev: any) => [response, ...prev]);
+    let newComments: any = [response, ...allComments];
+
+    setComments(newComments);
 
     if (response.insertedId) {
       toast.success('Comment posted successfully');
