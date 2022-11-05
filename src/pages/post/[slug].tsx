@@ -14,6 +14,8 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { BsReply } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
+import Container from '../../components/Container';
+import Link from 'next/link';
 
 export default function PostPage({
   post,
@@ -29,6 +31,7 @@ const PostView = ({ blog }: any) => {
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState('');
   const [allComments, setComments] = useState([]);
+  const [relatedPosts, setRelatedPosts] = useState([]);
   const [commentsPage, setCommentsPage] = useState(1);
 
   const fetchComments = async () => {
@@ -79,6 +82,7 @@ const PostView = ({ blog }: any) => {
     if (blog) {
       fetchComments();
     }
+    fetchRelatedPosts();
   }, [commentsPage]);
 
   const handleNewComment = (e: any) => {
@@ -127,6 +131,46 @@ const PostView = ({ blog }: any) => {
     }
   };
 
+  const fetchRelatedPosts = async () => {
+    try {
+      const response = await postAPI.getPosts({ page: 1 });
+      console.log(response);
+      setRelatedPosts(response.posts);
+
+      return response;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
+
+  const _renderRelatedPosts = () => {
+    if (relatedPosts.length === 0) {
+      return <div className="text-center text-gray-500">No related posts</div>;
+    }
+
+    return (
+      <div className="flex flex-col space-y-4">
+        <div className="text-2xl font-bold mt-6 ml-3">Related Posts</div>
+        <div className="flex flex-col space-y-4">
+          {relatedPosts?.map((post: any) => (
+            <Link key={post._id} href={`/post/${post.slug}`}>
+              <a
+                target={'_blank'}
+                className="flex hover:bg-gray-200 rounded-md duration-200 px-3 flex-col space-y-2 cursor-pointer"
+              >
+                <div className="text-lg font-bold">{post.title}</div>
+                <div className="text-gray-500 text-sm">
+                  {commonDate(post.createdAt)}
+                </div>
+              </a>
+            </Link>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div>
       <SEO
@@ -137,90 +181,95 @@ const PostView = ({ blog }: any) => {
 
       <div className="mx-auto sm:px-4 px-6 md:px-10">
         <main className={'my-3'}>
-          <div className="container max-w-5xl mx-auto">
-            <div>
-              <div
-                placeholder="Article Title..."
-                className="bg-white text-4xl my-5 w-full placeholder-gray-500 font-extrabold border-none focus:backdrop-filter-none focus:outline-none"
-              >
-                {blog?.title}
-              </div>
-
-              <div className="bg-white text-justify lg:text-start w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
-                {blog?.content}
-              </div>
-
-              <div className="bg-white flex justify-start text-md my-10 w-full placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
-                {blog?.tags?.map((tag: string, i: number) => (
-                  <span
-                    key={i}
-                    className="border m-auto bg-gray-200 rounded-md px-2 py-1 mx-2"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Comment Section */}
-            <div className="my-10 text-3xl font-bold">Comments</div>
-            {!loading ? (
-              <Fragment>
-                <div className="bg-white w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
-                  <textarea
-                    placeholder="Enter your comment here..."
-                    required
-                    value={newComment}
-                    className="bg-white p-3 text-md rounded-md w-full border-2 border-gray-200 focus:border-blue-600 focus:outline-none"
-                    onChange={handleNewComment}
-                  ></textarea>
-                  <div className="w-full m-auto text-right">
-                    <button
-                      // disabled={newComment.length === 0}
-                      className="bg-blue-600 rounded-full my-4 text-white py-2 px-6"
-                      onClick={addComment}
-                    >
-                      <span className="flex text-base items-center my-auto">
-                        <FiSend className="mr-2" /> Submit
-                      </span>
-                    </button>
-                  </div>
+          <div className="xl:container xl:mx-auto flex justify-between">
+            <div className="w-full">
+              <div>
+                <div
+                  placeholder="Article Title..."
+                  className="bg-white text-4xl my-5 w-full placeholder-gray-500 font-extrabold border-none focus:backdrop-filter-none focus:outline-none"
+                >
+                  {blog?.title}
                 </div>
-                <div>
-                  {allComments?.map((comment: any, k) => (
-                    <Comment
-                      comment={comment}
-                      key={k}
-                      onAddNewReply={(newReply: any) => {
-                        setComments((prevComments: any) =>
-                          prevComments.map((prevComment: any) => {
-                            if (prevComment._id === comment._id) {
-                              return {
-                                ...prevComment,
-                                replies: [...prevComment.replies, newReply],
-                              };
-                            } else {
-                              return prevComment;
-                            }
-                          })
-                        );
-                      }}
-                    />
+
+                <div className="bg-white text-justify lg:text-start w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
+                  {blog?.content}
+                </div>
+
+                <div className="bg-white flex justify-start text-md my-10 w-full placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
+                  {blog?.tags?.map((tag: string, i: number) => (
+                    <span
+                      key={i}
+                      className="border m-auto bg-gray-200 rounded-md px-2 py-1 mx-2"
+                    >
+                      {tag}
+                    </span>
                   ))}
                 </div>
-              </Fragment>
-            ) : (
-              <div>
-                <div className="flex justify-start w-16">
-                  <Skeleton circle width={60} height={60} />
-                  <Skeleton />
-                </div>
-                <div>
-                  <Skeleton />
-                  <Skeleton />
-                </div>
               </div>
-            )}
+
+              {/* Comment Section */}
+              <div className="my-10 text-3xl font-bold">Comments</div>
+              {!loading ? (
+                <Fragment>
+                  <div className="bg-white w-full overflow-auto text-lg my-5 placeholder-gray-500 border-none focus:backdrop-filter-none focus:outline-none">
+                    <textarea
+                      placeholder="Enter your comment here..."
+                      required
+                      value={newComment}
+                      className="bg-white p-3 text-md rounded-md w-full border-2 border-gray-200 focus:border-blue-600 focus:outline-none"
+                      onChange={handleNewComment}
+                    ></textarea>
+                    <div className="w-full m-auto text-right">
+                      <button
+                        // disabled={newComment.length === 0}
+                        className="bg-blue-600 rounded-full my-4 text-white py-2 px-6"
+                        onClick={addComment}
+                      >
+                        <span className="flex text-base items-center my-auto">
+                          <FiSend className="mr-2" /> Submit
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    {allComments?.map((comment: any, k) => (
+                      <Comment
+                        comment={comment}
+                        key={k}
+                        onAddNewReply={(newReply: any) => {
+                          setComments((prevComments: any) =>
+                            prevComments.map((prevComment: any) => {
+                              if (prevComment._id === comment._id) {
+                                return {
+                                  ...prevComment,
+                                  replies: [...prevComment.replies, newReply],
+                                };
+                              } else {
+                                return prevComment;
+                              }
+                            })
+                          );
+                        }}
+                      />
+                    ))}
+                  </div>
+                </Fragment>
+              ) : (
+                <div>
+                  <div className="flex justify-start w-16">
+                    <Skeleton circle width={60} height={60} />
+                    <Skeleton />
+                  </div>
+                  <div>
+                    <Skeleton />
+                    <Skeleton />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="hidden xl:block bg-gray-50 mb-auto w-2/5 ml-4 px-2 rounded-lg">
+              {_renderRelatedPosts()}
+            </div>
           </div>
           <div className="hidden lg:block">
             <div className="flex justify-center">

@@ -11,7 +11,7 @@ function Layout(props: LayoutProps) {
     <div>
       {/* Header */}
       <Header />
-      <div>{props.children}</div>
+      <div className="mt-28">{props.children}</div>
       {/* Footer */}
       <Footer />
     </div>

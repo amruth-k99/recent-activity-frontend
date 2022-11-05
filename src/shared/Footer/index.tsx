@@ -1,7 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { TiPencil } from 'react-icons/ti';
-import { useRouter } from 'next/router';
 
 const Footer = () => {
   return (
