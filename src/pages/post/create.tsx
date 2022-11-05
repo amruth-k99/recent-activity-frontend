@@ -5,6 +5,7 @@ import postAPI from '../../apis/posts';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import SEO from '../../components/SEO';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -106,7 +107,11 @@ const Home: NextPage = () => {
                 className="mr-auto"
               >
                 <div className="text-md whitespace-nowrap flex gap-2 text-white rounded-3xl bg-blue-600 px-5 py-2 cursor-pointer">
-                  Create new post
+                  {loading ? (
+                    <AiOutlineLoading3Quarters className="mx-3 duration-200 animate-spin text-lg text-white" />
+                  ) : (
+                    'Create'
+                  )}
                 </div>
               </button>
             </div>
