@@ -6,6 +6,11 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import SEO from '../../components/SEO';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import dynamic from 'next/dynamic';
+
+const BlogEditor = dynamic(() => import('../../shared/Editor/BlogEditor'), {
+  ssr: false,
+});
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -26,7 +31,7 @@ const Home: NextPage = () => {
       return;
     }
 
-    if (!blog.content.trim()) {
+    if (!blog.content) {
       toast.error('Content is required');
       return;
     }
@@ -36,7 +41,7 @@ const Home: NextPage = () => {
       const body = {
         ...blog,
         title: blog.title.trim(),
-        content: blog.content.trim(),
+        content: blog.content,
         tags: blog.tags.split(','),
         slug: encodeURI(
           blog.title.replace(/\s/g, '-').toLowerCase() +
@@ -79,6 +84,8 @@ const Home: NextPage = () => {
                 onChange={handleInputChange}
                 className="bg-white text-4xl my-5 w-full placeholder-gray-500 font-extrabold border-none focus:backdrop-filter-none focus:outline-none"
               />
+
+              <BlogEditor />
 
               <textarea
                 placeholder="Blog Starts Here..."

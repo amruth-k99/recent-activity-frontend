@@ -10,11 +10,9 @@ import postAPI from '../../apis/posts';
 import { commonDate } from '../../utils/dates';
 import { useRouter } from 'next/router';
 import { FiSend } from 'react-icons/fi';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { BsReply } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
-import Container from '../../components/Container';
 import Link from 'next/link';
 
 export default function PostPage({
@@ -33,6 +31,7 @@ const PostView = ({ blog }: any) => {
   const [allComments, setComments] = useState([]);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [commentsPage, setCommentsPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
 
   const fetchComments = async () => {
     setLoading(true);
@@ -49,6 +48,7 @@ const PostView = ({ blog }: any) => {
       if (response.length === 0) {
         console.log('Comments', response);
         setLoading(false);
+        setLastPage(true);
         return;
       }
 
@@ -274,16 +274,18 @@ const PostView = ({ blog }: any) => {
           <div className="hidden lg:block">
             <div className="flex justify-center">
               <div className="flex justify-center">
-                <button
-                  className="bg-blue-600 rounded-full my-4 text-white py-2 px-6"
-                  onClick={() => {
-                    setCommentsPage(commentsPage + 1);
-                  }}
-                >
-                  <span className="flex text-base items-center my-auto">
-                    <FiSend className="mr-2" /> Load More
-                  </span>
-                </button>
+                {!lastPage && (
+                  <button
+                    className="bg-blue-600 rounded-full my-4 text-white py-2 px-6"
+                    onClick={() => {
+                      setCommentsPage(commentsPage + 1);
+                    }}
+                  >
+                    <span className="flex text-base items-center my-auto">
+                      <FiSend className="mr-2" /> Load More
+                    </span>
+                  </button>
+                )}
               </div>
             </div>
           </div>

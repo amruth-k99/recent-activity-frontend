@@ -38,3 +38,8 @@ textarea {
   height: 100%;
   line-height: 1;
 }
+
+.markdown-editor {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+}
