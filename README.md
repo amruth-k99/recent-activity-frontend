@@ -1,30 +1,28 @@
-# POC for Recent Activites Assignment
+# POC for Recent Activities Assignment
 
 ### by Amruth Kuntamalla
 
 This repo consists of the frontend part of the solution hosted on Vercel.
 
-> NOTE: For the backend repoitory: https://github.com/amruth-k99/amruth-blogs-backend
+> NOTE: For the backend repository: https://github.com/amruth-k99/amruth-blogs-backend
 
 ## Features
 
 - The project uses SSR and Incremental Static Rendering(ISR) to generate new blogs.
 - Configured for SEO with Open Graph(OG) tags and title tags for all the Static sites generated
-- A user can create a post and commnent to any post
+- A user can create a post and comment to any post
 - A user can check his activities in the homepage grouped by date
 
 ## Tech Stack
 
 - [Next JS] - A React Framework
-- TypeScript - Strongly-typed JavaScript
+- [TypeScript] - Strongly-typed JavaScript
 - [Tailwind] - CSS framework
-- [node.js] - evented I/O for the backend
-- [MongoDB] - Persistant Database
+- [node.js] - event-driven I/O for the backend
+- [MongoDB] - Persistent Database
 - [AWS Serverless Application Model(SAM)] - To deploy functions to AWS Lambda
 - [Vercel] - Hosting the frontend
 
-And of course Dillinger itself is open source with a [public repository][dill]
-on GitHub.
 
 ## Installation
 
@@ -64,6 +62,7 @@ NODE_ENV=production npm start
 [next js]: https://nextjs.org
 [node.js]: http://nodejs.org
 [mongodb]: https://www.mongodb.com/
+[TypeScript]: https://www.typescriptlang.org/
 [vercel]: https://www.vercel.com/
 
 ## Testing
