@@ -31,7 +31,7 @@ const PostView = ({ blog }: any) => {
   const [allComments, setComments] = useState([]);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [commentsPage, setCommentsPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1);
+  const [lastPage, setLastPage] = useState(false);
 
   const fetchComments = async () => {
     setLoading(true);
