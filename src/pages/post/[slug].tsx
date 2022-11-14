@@ -46,19 +46,22 @@ const PostView = ({ blog }: any) => {
       }
 
       if (response.length === 0) {
-        console.log('Comments', response);
         setLoading(false);
-        setLastPage(true);
         return;
       }
 
-      let updatedComments: any = [...allComments, ...response];
+      if (response.totalPages === 0) {
+        setLastPage(true);
+      } else {
+        setLastPage(response.totalPages === commentsPage);
+      }
+      let updatedComments: any = [...allComments, ...response.comments];
       setComments(() => updatedComments);
 
       if (router.asPath.includes('#comment-')) {
         setTimeout(() => {
           let commentId = router.asPath.split('#comment-')[1];
-          console.log('commentId', commentId);
+
           if (commentId) {
             let comment = document.getElementById(commentId);
             if (comment) {
@@ -66,7 +69,6 @@ const PostView = ({ blog }: any) => {
                 behavior: 'smooth',
               });
             } else {
-              console.log('comment not found');
               setCommentsPage(commentsPage + 1);
             }
           }
@@ -134,7 +136,6 @@ const PostView = ({ blog }: any) => {
   const fetchRelatedPosts = async () => {
     try {
       const response = await postAPI.getPosts({ page: 1 });
-      console.log(response);
       setRelatedPosts(response.posts);
 
       return response;
@@ -312,8 +313,6 @@ const Comment = ({ comment, onAddNewReply }: any) => {
   };
 
   const addReply = async (commentID: string) => {
-    console.log(commentID);
-
     if (reply.length === 0) {
       toast.info('Please enter a reply');
       return;
@@ -325,7 +324,7 @@ const Comment = ({ comment, onAddNewReply }: any) => {
       isReply: true,
       repliedToComment: commentID,
     });
-    console.log(response);
+
     if (response.insertedId) {
       onAddNewReply({
         comment: reply,
@@ -446,11 +445,7 @@ const Comment = ({ comment, onAddNewReply }: any) => {
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext<{ slug: string }>) {
-  console.log('params', params);
-
   if (params) {
-    console.log('@@@', params.slug);
-
     const post = await postAPI.getPostBySlug(params.slug || 'qwert');
 
     if (!post) {

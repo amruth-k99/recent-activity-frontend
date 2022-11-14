@@ -11,20 +11,15 @@ import SEO from '../components/SEO';
 
 const Home: NextPage = () => {
   const [blogs, setBlogs] = useState(new Array(4).fill(null));
-  const [loading, setLoading] = useState(false);
 
   const fetchBlogs = async () => {
-    setLoading(true);
     try {
       const blogs = await postAPI.getPosts({
         page: 1,
       });
 
-      console.log(blogs);
-
       setBlogs(blogs.posts);
     } catch (err) {}
-    setLoading(false);
   };
 
   useEffect(() => {

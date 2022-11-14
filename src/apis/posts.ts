@@ -39,7 +39,6 @@ const postAPI = {
 
   getPosts: async ({ page = 1 }) => {
     try {
-      console.log(`${BASE_URL}/api/posts?page=${page}`);
       const res = await fetch(`${BASE_URL}/api/posts?page=${page}`);
       const data = await res.json();
       return data;
@@ -50,8 +49,6 @@ const postAPI = {
 
   getPostBySlug: async (slug: string) => {
     try {
-      console.log(slug);
-
       const res = await fetch(`${BASE_URL}/api/post/${slug}`);
       if (res.status === 404) {
         return null;

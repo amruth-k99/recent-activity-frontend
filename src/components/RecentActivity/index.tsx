@@ -26,12 +26,10 @@ const RecentActivity = (): JSX.Element => {
   const _fetchRecentActivity = async (page: number) => {
     try {
       if (page > lastPage) {
-        console.log("We've reached the last page");
         setLoading(false);
         return;
       }
 
-      console.log('fetching recent activity', page, lastPage);
       setLoading(true);
       let res = await userAPIs.getRecentActivities(page).catch((err) => {
         console.log(err);
@@ -40,9 +38,9 @@ const RecentActivity = (): JSX.Element => {
 
       if (res?.recent_activities) {
         setLoading(false);
-        setLastPage(res.last_page);
+        setLastPage(res.totalPages);
         currentPageRef.current = page;
-        console.log(res);
+
         if (res.recent_activities.length === 0) {
           window.removeEventListener('scroll', () => {
             'handle scroll removed';
@@ -62,8 +60,6 @@ const RecentActivity = (): JSX.Element => {
               ...firstDateActivity.activities
             );
 
-            console.log([...prevActivities, ...res.recent_activities]);
-
             setActivities((): any => [
               ...prevActivities,
               ...res.recent_activities,
@@ -73,8 +69,6 @@ const RecentActivity = (): JSX.Element => {
         }
 
         setActivities((): any => [...activities, ...res.recent_activities]);
-      } else {
-        console.log('--------');
       }
     } catch (err) {
       toast.error('Something went wrong');
@@ -100,15 +94,11 @@ const RecentActivity = (): JSX.Element => {
   };
 
   const scrollListener = () => {
-    if (currentPageRef.current !== lastPage) {
-    }
-
     if (!bottomRef.current) {
       return;
     }
 
     if (bottomRef.current.scrollHeight < window.scrollY + 100) {
-      console.log('bottom reached');
       debounceOnScroll();
     }
   };

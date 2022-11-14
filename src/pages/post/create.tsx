@@ -44,12 +44,10 @@ const Home: NextPage = () => {
         ),
       };
 
-      console.log(body);
       const res = await postAPI.createPost(body);
       if (res.error) {
         toast.error(res.error);
       } else {
-        console.log(res);
         toast.success('Post created successfully');
         router.push(`/post/${body.slug}`);
       }
