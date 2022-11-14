@@ -469,7 +469,7 @@ export async function getStaticProps({
 
 export async function getStaticPaths({ locales }: GetStaticPathsContext) {
   const { posts } = await postAPI.getAllPosts({
-    page: 1,
+    page: "all",
   });
 
   return {

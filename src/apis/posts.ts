@@ -26,7 +26,7 @@ const postAPI = {
     }
   },
 
-  getAllPosts: async ({ page = 1 }) => {
+  getAllPosts: async ({ page = 1 }: any) => {
     try {
       const res = await fetch(`${BASE_URL}/api/posts?page=${page}`);
       const data = await res.json();
