@@ -175,8 +175,8 @@ const PostView = ({ blog }: any) => {
   return (
     <div>
       <SEO
-        slug={blog?.slug}
-        title={blog?.title}
+        slug={blog.slug}
+        title={blog.title}
         description={'Click here to read the blog'}
       />
 
