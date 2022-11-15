@@ -1,4 +1,4 @@
-# POC for Recent Activities Assignment
+# POC for Amruth's Blogs
 
 ### by Amruth Kuntamalla
 
